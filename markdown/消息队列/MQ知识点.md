@@ -1,3 +1,16 @@
+## MQ 有什么用？有哪些具体使用场景
+MQ：Message Queue，消息队列，队列是一种先进先出 FIFO 的数据结构。消息由生产者发送到 MQ 进行排队，然后由消费者从 MQ 接收进行处理。  
+QQ、微信就是 MQ 的具体使用场景。  
+MQ 的作用：
+1. 异步，使生产者和消费者异步执行，提高系统的响应速度和吞吐量。
+2. 解耦，使生产者和消费者解耦，生产者和消费者相互独立。还可以实现数据分发，生产者发送一个消息，可由多个消费者消费，提高系统的稳定性和可扩展性。
+3. 削峰，以稳定的系统资源，应对突发的流量冲击。如突发新闻，微博瞬间一个热搜引发大量发帖讨论，就依靠 MQ 削峰。
+
+MQ 的缺点：
+1. 系统可用性降低，MQ 宕机，整个业务都受影响，要做高可用。
+2. 系统复杂度提高，引入 MQ 后，数据链路变得复杂，要保证消息不丢失、不重复消费、保证消息顺序性。
+3. 会出现数据一致性问题，A 系统发消息，B、C 系统处理消息，B 系统成功，C 系统失败，就出现数据不一致。
+
 ## Kafka, ActiveMQ, RabbitMQ, RocketMQ对比
 ActiveMQ：JMS 规范，支持事务（ACID 特性）、支持 XA 协议，没有生产大规模支撑场景，官方维护越来越少。吞吐量单机都在万级以上。  
 RabbitMQ：erlang 语言开发、性能好、高并发，支持多种语言，社区、文档方面有优势。  
@@ -125,3 +138,22 @@ transfile：操作系统在内存中开辟一个 DMA 区域，该区域允许不
 ![零拷贝transfile.png](../图片素材/MQ/零拷贝transfile.png)
 Java 对零拷贝技术进行了封装，mmap 方式通过 MappedByteBuffer 对象进行操作，transfile 通过 FileChannel 对象进行操作。  
 mmap 方式适合操作比较小的文件，大小范围最好在 1.5G - 2G。transfile 无文件大小范围限制，但内存始终有限。
+
+## RocketMQ 的架构设计
+阿里研发，现捐赠给阿帕奇，参考了 Kafka，经受了双十一的流量考验。  
+![RocketMQ架构.png](../图片素材/MQ/RocketMQ架构.png)
+1. NameServer 作用类似 Kafka 的 Zookeeper，保存路由信息，集群有哪些 broker，各个 broker 有哪些 topic。  
+和 ZK 不同的是：ZK 各个节点之间是有主从同步和数据迁移的，而 NameServer 各个节点之间是独立的，每个节点都保存了集群全量的消息，  
+提高了 NameServer 的可用性，只要有一个 NameServer 节点存活，那么 RocketMQ 就还能正常工作。  
+2. Queue 的作用类似 Kafka 的 Partition，保存消息，并做冗余副本。  
+和 Partition 不同的是：Partition 之间也是有主从的，而 Queue 之间是独立的。  
+RocketMQ 分配 Queue 的机制和 Kafka 分配 Partition 的机制也不一样，比如给一个 Topic 指定使用 3 个 Queue 或 Partition，  
+则 RocketMQ 会给每个拥有该 Topic 的 broker 都分配 3 个 Queue，所有的 Queue 数量，含副本，会是 (broker 数 * 3)。  
+而 Kafka 则只会给拥有该 Topic 的 broker 总共分配 3 个 Partition。所有的 Partition 数量，含副本，会是 3。  
+这就避免了 Kafka 的问题：如果恰巧某个 Topic 所有的 Partition 副本都分配在同一个 broker 上，这个 broker 挂了会导致整个 Topic 不可用。
+3. RocketMQ 的负载均衡机制和 Kafka 也不一样。   
+对于 Kafka，如果发现某个 Partition 不可用，则去寻找下一个 Partition。  
+对于 RocketMQ，如果发现某个 Queue 不可用，则去寻找下一个 broker 的 Queue。  
+区别在于：可能某个 broker 上有很多 Partition 的副本，如果该 broker 挂了，
+Kafka 需要试探很多个无效的 Partition，才能找到其他 broker 上可用的 Partition。
+而 RocketMQ 则避免了这类问题。
