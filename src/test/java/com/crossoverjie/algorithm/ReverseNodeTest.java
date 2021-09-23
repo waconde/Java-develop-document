@@ -7,7 +7,7 @@ public class ReverseNodeTest {
 
     @Test
     public void reverseNode1() throws Exception {
-        ReverseNode.Node<String> node4 = new Node<>("4",null) ;
+        Node<String> node4 = new Node<>("4",null) ;
         Node<String> node3 = new Node<>("3",node4);
         Node<String> node2 = new Node<>("2",node3);
         Node<String> node1 = new Node("1",node2) ;
