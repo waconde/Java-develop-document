@@ -21,18 +21,18 @@
 
 之后将各个节点散列到这个环上，可以用节点的 IP、hostname 这样的唯一性字段作为 Key 进行 `hash(key)`，散列之后如下：
 
-![](https://ws3.sinaimg.cn/large/006tNc79gy1fn8kf72uwuj30a40a70t5.jpg)
+![](https://ww1.sinaimg.cn/large/006tNc79gy1fn8kf72uwuj30a40a70t5.jpg)
 
 之后需要将数据定位到对应的节点上，使用同样的 `hash 函数` 将 Key 也映射到这个环上。
 
-![](https://ws3.sinaimg.cn/large/006tNc79gy1fn8kj9kd4oj30ax0aomxq.jpg)
+![](https://ww1.sinaimg.cn/large/006tNc79gy1fn8kj9kd4oj30ax0aomxq.jpg)
 
 这样按照顺时针方向就可以把 k1 定位到 `N1节点`，k2 定位到 `N3节点`，k3 定位到 `N2节点`。
 
 ### 容错性
 这时假设 N1 宕机了：
 
-![](https://ws3.sinaimg.cn/large/006tNc79gy1fn8kl9pp06j30a409waaj.jpg)
+![](https://ww1.sinaimg.cn/large/006tNc79gy1fn8kl9pp06j30a409waaj.jpg)
 
 依然根据顺时针方向，k2 和 k3 保持不变，只有 k1 被重新映射到了 N3。这样就很好的保证了容错性，当一个节点宕机时只会影响到少少部分的数据。
 

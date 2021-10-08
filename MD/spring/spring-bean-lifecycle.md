@@ -7,7 +7,7 @@ Spring Bean 的生命周期在整个 Spring 中占有很重要的位置，掌握
 
 首先看下生命周期图：
 
-![](https://ws3.sinaimg.cn/large/006tNc79gy1fpjsamy6uoj30nt0cqq4i.jpg)
+![](https://ww1.sinaimg.cn/large/006tNc79gy1fpjsamy6uoj30nt0cqq4i.jpg)
 
 再谈生命周期之前有一点需要先明确：
 
@@ -178,4 +178,3 @@ public class SpringLifeCycleProcessor implements BeanPostProcessor {
 ```
 
 直到 Spring 上下文销毁时则会调用自定义的销毁方法以及实现了 `DisposableBean` 的 `destroy()` 方法。
-
