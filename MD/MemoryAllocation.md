@@ -1,6 +1,6 @@
 # Java 运行时的内存划分
 
-![](https://ws1.sinaimg.cn/large/006tNc79ly1fmk5v19cmvj30g20anq3y.jpg)
+![](https://ww1.sinaimg.cn/large/006tNc79ly1fmk5v19cmvj30g20anq3y.jpg)
 
 ## 程序计数器
 

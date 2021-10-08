@@ -5,7 +5,7 @@
 因此需要支持线程安全的并发容器 `ConcurrentHashMap` 。
 
 ## 数据结构
-![](https://ws2.sinaimg.cn/large/006tNc79ly1fn2f5pgxinj30dw0730t7.jpg)
+![](https://ww2.sinaimg.cn/large/006tNc79ly1fn2f5pgxinj30dw0730t7.jpg)
 
 如图所示，是由 `Segment` 数组、`HashEntry` 数组组成，和 `HashMap` 一样，仍然是数组加链表组成。
 

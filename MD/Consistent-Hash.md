@@ -17,7 +17,7 @@
 
 一致 Hash 算法是将所有的哈希值构成了一个环，其范围在 `0 ~ 2^32-1`。如下图：
 
-![](https://ws1.sinaimg.cn/large/006tNc79gy1fn8kbmd4ncj30ad08y3yn.jpg)
+![](https://ww1.sinaimg.cn/large/006tNc79gy1fn8kbmd4ncj30ad08y3yn.jpg)
 
 之后将各个节点散列到这个环上，可以用节点的 IP、hostname 这样的唯一性字段作为 Key 进行 `hash(key)`，散列之后如下：
 
@@ -40,7 +40,7 @@
 
 当新增一个节点时:
 
-![](https://ws1.sinaimg.cn/large/006tNc79gy1fn8kp1fc9xj30ca0abt9c.jpg)
+![](https://ww1.sinaimg.cn/large/006tNc79gy1fn8kp1fc9xj30ca0abt9c.jpg)
 
 在 N2 和 N3 之间新增了一个节点 N4 ，这时会发现受印象的数据只有 k3，其余数据也是保持不变，所以这样也很好的保证了拓展性。
 
@@ -49,13 +49,13 @@
 
 当节点较少时会出现数据分布不均匀的情况：
 
-![](https://ws2.sinaimg.cn/large/006tNc79gy1fn8krttekbj30c10a5dg5.jpg)
+![](https://ww2.sinaimg.cn/large/006tNc79gy1fn8krttekbj30c10a5dg5.jpg)
 
 这样会导致大部分数据都在 N1 节点，只有少量的数据在 N2 节点。
 
 为了解决这个问题，一致哈希算法引入了虚拟节点。将每一个节点都进行多次 hash，生成多个节点放置在环上称为虚拟节点:
 
-![](https://ws2.sinaimg.cn/large/006tNc79gy1fn8ktzuswkj30ae0abdgb.jpg)
+![](https://ww2.sinaimg.cn/large/006tNc79gy1fn8ktzuswkj30ae0abdgb.jpg)
 
 计算时可以在 IP 后加上编号来生成哈希值。
 

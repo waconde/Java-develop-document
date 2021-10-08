@@ -26,7 +26,7 @@ ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, Ti
 ## 处理流程
 当提交一个任务到线程池时它的执行流程是怎样的呢？
 
-![](https://ws1.sinaimg.cn/large/006tNbRwgy1fnbzmai8yrj30dw08574s.jpg)
+![](https://ww1.sinaimg.cn/large/006tNbRwgy1fnbzmai8yrj30dw08574s.jpg)
 
 首先第一步会判断核心线程数有没有达到上限，如果没有则创建线程(会获取全局锁)，满了则会将任务丢进阻塞队列。
 

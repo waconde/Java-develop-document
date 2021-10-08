@@ -18,7 +18,7 @@
 
 流程图如下:
 
-![](https://ws2.sinaimg.cn/large/006tNc79ly1fn27fkl07jj31e80hyn0n.jpg)
+![](https://ww2.sinaimg.cn/large/006tNc79ly1fn27fkl07jj31e80hyn0n.jpg)
 
 
 通过一段代码来演示:
@@ -112,4 +112,3 @@ public class com.crossoverjie.synchronize.Synchronize {
 在使用 `CAS` 时，如果操作失败，`CAS` 会自旋再次尝试。由于自旋是需要消耗 `CPU` 资源的，所以如果长期自旋就白白浪费了 `CPU`。`JDK1.6`加入了适应性自旋:
 
 > 如果某个锁自旋很少成功获得，那么下一次就会减少自旋。
-
