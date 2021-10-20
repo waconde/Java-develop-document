@@ -73,8 +73,8 @@ aabaaac
 可是此时我们发现源字符串和模式串该位置(i = j = 5)字符并不匹配，表示源字符串中 i = [0, 5] 范围所形成的子串和模式串中 j = [0, 5] 范围所形成的子串已经匹配失败，需要寻找下一个子串来与模式串进行匹配。  
 如果是暴力穷举算法来找新子串，它会使 i 递增 1，把源字符串的每一个字符，一个一个地当做子串的起始位置，然后试图去与模式串进行匹配。
 而 KMP 算法则依靠 next 数组来寻找子串，它会把模式串挪动，使模式串下标为 next 数组元素值的字符，与源字符串当前字符对齐，再试图匹配。  
-要达到相同的效果，暴力穷举法需要经过 3 次循环，而 KMP 算法只需经过 1 次循环。
-![KMP算法对比图](../图片素材/算法/KMP算法对比图.png)
+要达到相同的效果，暴力穷举法需要经过 3 次循环，而 KMP 算法只需经过 1 次循环。  
+![KMP算法对比图](../图片素材/算法/KMP算法对比图.png)  
 可以看到 KMP 算法能跳过一些错误路径，直接到达下一步可能正确的位置，实现这一行为靠的就是公共前后缀。  
 当发现一个字符不匹配时，只需要找到模式串中，在它之前的字符所形成的字符串的公共前后缀，然后将前缀部分挪到后缀部分即可。  
 ![KMP算法next数组](../图片素材/算法/KMP算法next数组.png)
@@ -88,8 +88,124 @@ aabaaac
 
 ## 先求前缀表
 前缀表：前缀表也是数组，可以看见 next 数组由它衍生而来，因此定义十分相近。它表示所有从第一个字符开始的各个子串的最长公共前后缀的长度。  
-前缀表的元素下标表示一个从第一个字符开始的子串，前缀表的元素值表示该子串的最长公共前后缀的长度。
-![KMP算法前缀表](../图片素材/算法/KMP算法前缀表.png)
+前缀表的元素下标表示一个从第一个字符开始的子串，前缀表的元素值表示该子串的最长公共前后缀的长度。  
+![KMP算法前缀表](../图片素材/算法/KMP算法前缀表.png)  
+
+重点：怎么实现求前缀表的代码？
+1. 前缀表的第一个元素值，一定为 0。因为前缀表的第一个元素一定只表示模式串的第一个字符，而单个字符是没有前后缀的。
+2. 求前缀表的下标为 index (index > 0) 的元素值时，要看下标为 index - 1 的元素值。
+   1. 如果下标为 index - 1 的元素值为 0，那表示 [0, index - 1] 的子串没有公共前后缀，不会有影响。
+   将模式串中下标为 index 的字符与第一个字符作比较即可。相等则表示 [0, index] 的子串最长公共前后缀长度为 1，前缀表下标为 index 的元素值为 1。
+   不相等，则表示 [0, index] 的子串依旧没有公共前后缀，前缀表下标为 index 的元素值为 0。
+   2. 如果下标为 index - 1 的元素值为 x(x != 0)，那表示 [0, index - 1] 的子串有最长公共前后缀，需要考虑在内。
+      将模式串中下标为 index 的字符与下标为 x 的字符作比较，相等，则表示上一步的最长公共前后缀还在延长，即前缀表中下标为 index 的元素值为 x + 1。
+      不相等，则还需要将模式串中下标为 index 的字符与第一个字符作比较，如果相等，则表示和上一步的公共前后缀相同，即前缀表中下标为 index 的元素值和 index - 1 元素值相同。
+      如果不相等，则表示 [0, index] 子串没有公共前后缀，即前缀表中下标为 index 的元素值为 0。
+
+![KMP算法生成前缀表](../图片素材/算法/KMP算法生成前缀表.png)  
+
+
 ## 衍生 next 数组
-前缀表所有元素后移一位，最后一位丢弃不管，然后在第一位填入固定值 -1
+前缀表所有元素后移一位，最后一位丢弃不管，然后在第一位填入固定值 -1  
 ![KMP算法衍生next数组](../图片素材/算法/KMP算法衍生next数组.png)
+
+# 代码
+```java
+    /***
+     * @Description 此方法中的代码不重要，KMP 算法怎么搜不关键，围绕 next 数组，八仙过海各显神通。
+     * @Author side.wang
+     * @Date 2021/10/20
+     * @Param 
+     * @return 
+     */
+    public int kmp(String source, String pattern) {
+        int index = 0;
+        if ("".equals(pattern)) {
+            return index;
+        } else if ("".equals(source)) {
+            return - 1;
+        }
+
+        int[] nextArray = createNextArray(pattern);
+
+        int j = 0;
+        int i = 0;
+        for (; i < source.length() && j < pattern.length(); i++) {
+            // 如果源串和模式串某一位不匹配，则查 next 数组，看需要模式串哪一位挪过来和源串该位做比较
+            if (source.charAt(i) != pattern.charAt(j)) {
+                // 如果模式串还可以继续和源串当前字符匹配，则保持源串下标在当前字符处。避免跳到下一个字符
+                // -1 表示已经回溯到了模式串第一个字符，再不会有回溯的情况，可以直接匹配下一个字符
+                if (nextArray[j] != -1) {
+                    i--;
+                }
+                // 防止越界
+                j = Math.max(nextArray[j], 0);
+            } else {
+                j++;
+            }
+        }
+        if (j == pattern.length()) {
+            index = i - pattern.length();
+        } else if (i == source.length()) {
+            index = - 1;
+        }
+        return index;
+    }
+
+    /**
+     * @return int[]
+     * @Description 创建前缀表
+     * 前缀表下标和字符串中字符下标一一对应，代表从 0 开始，到该下标（包含下标）的字符所组成的子串
+     * 前缀表的值代表当前下标所表示的子串中所包含的最长公共前后缀长度
+     * 比如：aaba 的前缀表含有四个元素，因为它可以有四个子串，a，aa，aab，aaba
+     * 可见前缀表第一位元素必为 0
+     * @Author side.wang
+     * @Date 2021/10/16
+     * @Param [pattern]
+     */
+    public int[] createPrefixTable(String pattern) {
+        int[] prefixTable = new int[pattern.length()];
+        // 前缀表第一位必为单个字符形成的子串，无最长公共前后缀，长度为 0
+        prefixTable[0] = 0;
+        // 前缀表其他位表示多个字符形成的子串，要分情况讨论最长公共前后缀长度
+        for (int i = 1; i < prefixTable.length; i++) {
+            // 情况一：有公共前后缀，且其长度比上一个更长
+            // 比如：aabaaa，下标 0 - 3 的字符，最长公共前后缀 a 长度为 1，
+            // 下标 0 - 4 的字符，最长公共前后缀延长为 aa，长度为 2。
+            // 所以要将本次字符和上次最长公共前后缀的后一个字符作比较。如果依然相等，则最长公共前后缀延长一个字符
+            // 接上个例子：要想计算下标为 0 - 4 的字符组成的子串的最长公共前后缀长度时，要把下标为 4 的字符，和下标为 1 的字符作比较
+            // 上次的最长公共前后缀为 a，其后一个字符的下标即为："a".length —— 上次最长公共前后缀的长度，为前缀表的上一个元素的值
+            if (pattern.charAt(i) == pattern.charAt(prefixTable[i - 1])) {
+                prefixTable[i] = prefixTable[i - 1] + 1;
+            // 情况二：有公共前后缀，但和上次最长公共前后缀相等，没有延长
+            // 比如：aabaaa，下标 0 - 4 的字符，最长公共前后缀 aa 长度为 2，
+            // 下标 0 - 5 的字符，最长公共前后缀也为 aa，长度为 2。
+            // 所以要将本次字符和上次最长公共前后缀的后一个字符作比较。如果不相等，则将本次字符和第一个字符作比较，
+            // 如果和第一个字符相等，则表示最长公共前后缀没有被破坏，依旧为上次的值。如果和第一个字符不相等，则表示无最长公共前后缀
+            // 接上个例子：要想计算下标为 0 - 5 的字符组成的子串的最长公共前后缀长度时，要把下标为 5 的字符，和下标为 2 的字符作比较
+            // 但发现它们不相等，于是再次将下标为 5 的字符和第一个字符比较，相等，则继承上次最长公共前后缀长度，否则归零。
+            } else if (pattern.charAt(i) == pattern.charAt(0)) {
+                prefixTable[i] = prefixTable[i - 1];
+            // 情况三：无公共前后缀
+            } else {
+                prefixTable[i] = 0;
+            }
+        }
+        return prefixTable;
+    }
+
+    /**
+     * @return int[]
+     * @Description 创建 next 数组
+     * @Author side.wang
+     * @Date 2021/10/16
+     * @Param [pattern]
+     */
+    public int[] createNextArray(String pattern) {
+        int[] prefixTable = createPrefixTable(pattern);
+        int[] nextArray = new int[prefixTable.length];
+        nextArray[0] = - 1;
+        System.arraycopy(prefixTable, 0, nextArray, 1, prefixTable.length - 1);
+        return nextArray;
+    }
+```
