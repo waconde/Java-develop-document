@@ -31,7 +31,7 @@
 
 调试可以看到 `map` 的组成：
 
-![](https://ws2.sinaimg.cn/large/006tKfTcly1fo6l9xp91lj319m0s4tgi.jpg)
+![](https://ww2.sinaimg.cn/large/006tKfTcly1fo6l9xp91lj319m0s4tgi.jpg)
 
 
 打开源码可以看到：
@@ -66,7 +66,7 @@
 
 上边的 demo 总结成一张图如下：
 
-![](https://ws1.sinaimg.cn/large/006tKfTcgy1fodggwc523j30za0n4wgj.jpg)
+![](https://ww1.sinaimg.cn/large/006tKfTcgy1fodggwc523j30za0n4wgj.jpg)
 
 第一个类似于 `HashMap` 的结构，利用 `Entry` 中的 `next` 指针进行关联。
 
@@ -274,5 +274,3 @@ LinkedHashMap 的 `get()` 方法也重写了：
 总的来说 `LinkedHashMap` 其实就是对 `HashMap` 进行了拓展，使用了双向链表来保证了顺序性。
 
 因为是继承与 `HashMap` 的，所以一些 `HashMap` 存在的问题 `LinkedHashMap` 也会存在，比如不支持并发等。
-
-

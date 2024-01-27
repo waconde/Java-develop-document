@@ -118,7 +118,7 @@ public class CustomizeHandle implements InvocationHandler {
 
 其实代理类是由
 
-![](https://ws3.sinaimg.cn/large/006tNc79gy1fms01lcml3j30ki09s75v.jpg)
+![](https://ww1.sinaimg.cn/large/006tNc79gy1fms01lcml3j30ki09s75v.jpg)
 
 这个方法动态创建出来的。将 proxyClassFile 输出到文件并进行反编译的话就可以的到代理类。
 ```java
@@ -220,5 +220,3 @@ public class $Proxy1 extends Proxy implements ISubject {
 
 cglib 是对一个小而快的字节码处理框架 `ASM` 的封装。
 他的特点是继承于被代理类，这就要求被代理类不能被 `final` 修饰。
-
-

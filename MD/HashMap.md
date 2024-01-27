@@ -2,7 +2,7 @@
 
 > 以下基于 JDK1.7 分析。
 
-![](https://ws2.sinaimg.cn/large/006tNc79gy1fn84b0ftj4j30eb0560sv.jpg)
+![](https://ww2.sinaimg.cn/large/006tNc79gy1fn84b0ftj4j30eb0560sv.jpg)
 
 如图所示，HashMap 底层是基于数组和链表实现的。其中有两个重要的参数：
 
@@ -59,7 +59,7 @@ map.forEach((key,value)->{
 
 并发场景发生扩容，调用 `resize()` 方法里的 `rehash()` 时，容易出现环形链表。这样当获取一个不存在的 `key` 时，计算出的 `index` 正好是环形链表的下标时就会出现死循环。
 
-![](https://ws2.sinaimg.cn/large/006tNc79gy1fn85u0a0d9j30n20ii0tp.jpg)
+![](https://ww2.sinaimg.cn/large/006tNc79gy1fn85u0a0d9j30n20ii0tp.jpg)
 
 > 所以 HashMap 只能在单线程中使用，并且尽量的预设容量，尽可能的减少扩容。
 

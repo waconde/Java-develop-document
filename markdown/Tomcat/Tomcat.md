@@ -11,7 +11,7 @@
 （JVM 如何区分类？  
 类的唯一标识：类的加载实例 + 类的全限定类名。
 所以 Tomcat 可以达到为每个应用使用自己的类加载器去加载同全限定名的类而出现不冲突的效果：  
-WebAppClassLoaderA 类加载实例 + 全限定类名
+WebAppClassLoaderA 类加载实例 + 全限定类名  
 WebAppClassLoaderB 类加载实例 + 全限定类名）
 
 ## Tomcat 如何进行优化？
